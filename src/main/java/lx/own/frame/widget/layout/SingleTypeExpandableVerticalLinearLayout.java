@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lx.own.frame.R;
+import lx.own.frame.widget.tool.BaseOnClickListener;
 import lx.own.frame.widget.tool.SingleTypeViewRecyclePool;
 
 /**
@@ -25,7 +26,7 @@ import lx.own.frame.widget.tool.SingleTypeViewRecyclePool;
  * @author LeiXun
  */
 
-public class SingleTypeExpandableVerticalLinearLayout extends ViewGroup implements View.OnClickListener {
+public class SingleTypeExpandableVerticalLinearLayout extends ViewGroup{
     private static final String TAG = "ExpandableVerticalLinea";
 
     public static final int GRAVITY_LEFT = 1;
@@ -104,7 +105,13 @@ public class SingleTypeExpandableVerticalLinearLayout extends ViewGroup implemen
         mExpandClickTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mExpandHintTextSize);
         mExpandClickTextView.setLayoutParams(new ViewGroup.LayoutParams(mExpandHintTextViewWidth < 0 ? LayoutParams.WRAP_CONTENT : mExpandHintTextViewWidth,
                 mExpandHintTextViewHeight < 0 ? LayoutParams.WRAP_CONTENT : mExpandHintTextViewHeight));
-        mExpandClickTextView.setOnClickListener(this);
+        mExpandClickTextView.setOnClickListener(new BaseOnClickListener(){
+            @Override
+            protected void onValidClick(View v) {
+                if (v == mExpandClickTextView)
+                    expand();
+            }
+        });
         addView(mExpandClickTextView, 0);
     }
 
@@ -292,11 +299,6 @@ public class SingleTypeExpandableVerticalLinearLayout extends ViewGroup implemen
         this.mShrinkMaxItems = count;
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v == mExpandClickTextView)
-            expand();
-    }
 
     public abstract class SingleTypeExpandableVerticalLinearLayoutAdapter {
         private SingleTypeExpandableVerticalLinearLayout mParent;
