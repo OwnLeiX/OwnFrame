@@ -3,7 +3,8 @@ package lx.own.frame.frame.base;
 import android.app.Application;
 import android.content.Context;
 
-import lx.own.frame.tools.work.ThreadPool;
+import lx.own.frame.tools.network.kernel.NetworkEngine;
+import lx.own.frame.tools.work.kernel.WorkEngine;
 
 /**
  * <b></b>
@@ -19,12 +20,14 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-        ThreadPool.init();
+        WorkEngine.init();
+        NetworkEngine.init();
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-        ThreadPool.release();
+        WorkEngine.release();
+        NetworkEngine.release();
     }
 }

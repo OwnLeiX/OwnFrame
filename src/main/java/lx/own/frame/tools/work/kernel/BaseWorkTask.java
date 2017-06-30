@@ -1,4 +1,4 @@
-package lx.own.frame.tools.work;
+package lx.own.frame.tools.work.kernel;
 
 import android.support.annotation.MainThread;
 
@@ -9,36 +9,40 @@ import android.support.annotation.MainThread;
  * @date 30/06/2017
  */
 
-abstract class BaseWorkTask<D> implements Runnable {
+public abstract class BaseWorkTask<D> implements Runnable {
 
     public long id;
     private boolean isFinished = false;
     private D data;
+    private WorkEngine engine;
 
     final public boolean enqueue(D data) {
+        engine = WorkEngine.$();
         this.data = data;
-        return ThreadPool.enqueue(this);
+        return engine.enqueue(this);
     }
 
     @Override
     final public void run() {
+        if (engine == null)
+            throw new IllegalStateException("you should call method 'execute()' or 'enqueue()' instead of 'run()' !");
         isFinished = false;
         try {
-            ThreadPool.postToUi(new Runnable() {
+            engine.notifyToUiThread(new Runnable() {
                 @Override
                 public void run() {
                     start();
                 }
             });
             run(data);
-            ThreadPool.postToUi(new Runnable() {
+            engine.notifyToUiThread(new Runnable() {
                 @Override
                 public void run() {
                     success();
                 }
             });
         } catch (final Exception e) {
-            ThreadPool.postToUi(new Runnable() {
+            engine.notifyToUiThread(new Runnable() {
                 @Override
                 public void run() {
                     fail(e);
@@ -46,36 +50,31 @@ abstract class BaseWorkTask<D> implements Runnable {
             });
         } finally {
             isFinished = true;
-            ThreadPool.postToUi(new Runnable() {
+            engine.notifyToUiThread(new Runnable() {
                 @Override
                 public void run() {
                     finish();
                 }
             });
-            ThreadPool.notifyTaskCompleted();
+            engine.notifyTaskCompleted();
         }
-
     }
 
-    abstract void run(D data) throws Exception;
+    protected abstract void run(D data) throws Exception;
 
     @MainThread
-    abstract void start();
+    protected abstract void start();
 
     @MainThread
-    abstract void success();
+    protected abstract void success();
 
     @MainThread
-    abstract void fail(Throwable e);
+    protected abstract void fail(Throwable e);
 
     @MainThread
-    abstract void finish();
+    protected abstract void finish();
 
     final public boolean isFinished() {
         return isFinished;
-    }
-
-    final public boolean cancel() {
-        return ThreadPool.cancelWaitTask(this);
     }
 }

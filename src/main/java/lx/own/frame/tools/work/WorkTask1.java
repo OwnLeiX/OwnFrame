@@ -3,6 +3,8 @@ package lx.own.frame.tools.work;
 import android.support.annotation.MainThread;
 import android.support.annotation.WorkerThread;
 
+import lx.own.frame.tools.work.kernel.BaseWorkTask;
+
 /**
  * <p> </p><br/>
  *
@@ -13,27 +15,27 @@ import android.support.annotation.WorkerThread;
 public abstract class WorkTask1<D> extends BaseWorkTask<D> {
 
     @Override
-    final void start() {
+    final protected void start() {
         onStared();
     }
 
     @Override
-    final void run(D data){
+    final protected void run(D data){
         work(data);
     }
 
     @Override
-    final void success() {
+    final protected void success() {
         onSucceed();
     }
 
     @Override
-    final void fail(Throwable e) {
+    final protected void fail(Throwable e) {
         onFailed(e);
     }
 
     @Override
-    final void finish() {
+    final protected void finish() {
         onFinished();
     }
 

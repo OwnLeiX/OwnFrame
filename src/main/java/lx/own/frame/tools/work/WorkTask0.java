@@ -2,6 +2,8 @@ package lx.own.frame.tools.work;
 
 import android.support.annotation.WorkerThread;
 
+import lx.own.frame.tools.work.kernel.BaseWorkTask;
+
 /**
  * <p> </p><br/>
  *
@@ -12,27 +14,27 @@ import android.support.annotation.WorkerThread;
 public abstract class WorkTask0<D> extends BaseWorkTask<D> {
 
     @Override
-    final void start() {
+    final protected void start() {
 
     }
 
     @Override
-    final void run(D data){
+    final protected void run(D data){
         work(data);
     }
 
     @Override
-    final void success() {
+    final protected void success() {
 
     }
 
     @Override
-    final void fail(Throwable e) {
+    final protected void fail(Throwable e) {
 
     }
 
     @Override
-    final void finish() {
+    final protected void finish() {
 
     }
 
