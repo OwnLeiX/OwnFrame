@@ -1,5 +1,7 @@
 package lx.own.frame.tools.network.kernel;
 
+import java.nio.charset.Charset;
+
 /**
  * <p> </p><br/>
  *
@@ -8,12 +10,18 @@ package lx.own.frame.tools.network.kernel;
  */
 
 public class NetworkEngine {
+    private Charset charset;
+
 
     public static void init() {
 
     }
 
     public static void release() {
+    }
+
+
+    void execute(BaseRequest request){
 
     }
 }
