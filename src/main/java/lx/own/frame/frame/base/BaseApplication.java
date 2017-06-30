@@ -25,6 +25,6 @@ public class BaseApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        ThreadPool.destroy();
+        ThreadPool.release();
     }
 }
