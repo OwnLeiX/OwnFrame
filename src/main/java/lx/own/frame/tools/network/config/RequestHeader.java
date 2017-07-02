@@ -1,6 +1,7 @@
 package lx.own.frame.tools.network.config;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * <p> </p><br/>
@@ -17,7 +18,16 @@ public class RequestHeader {
     }
 
     public RequestHeader add(String key, String value) {
-        mHeaderMap.put(key, value);
+        if (key != null && value != null)
+            mHeaderMap.put(key, value);
         return this;
+    }
+
+    public String get(String key) {
+        return mHeaderMap.get(key);
+    }
+
+    public Set<String> keySet() {
+        return mHeaderMap.keySet();
     }
 }

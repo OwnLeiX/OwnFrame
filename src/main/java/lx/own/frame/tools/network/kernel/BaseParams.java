@@ -10,13 +10,14 @@ import java.nio.charset.Charset;
  */
 
 public abstract class BaseParams {
-    byte[] buildByt(Charset charset){
+    byte[] buildByt(Charset charset) {
         return buildBytes(charset);
     }
 
-    String buildStr(){
+    String buildStr() {
         return buildString();
     }
+
     protected abstract byte[] buildBytes(Charset charset);
 
     protected abstract String buildString();

@@ -69,6 +69,7 @@ public class WorkEngine {
                     buildThread(task);
                 }
             } else {
+                isExecute = mTaskQueue.isEmpty();
                 if (!mTaskQueue.offer(task)) {
                     isExecute = true;
                     notifyToUiThread(new Runnable() {

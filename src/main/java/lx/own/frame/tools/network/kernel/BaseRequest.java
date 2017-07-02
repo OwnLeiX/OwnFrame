@@ -19,7 +19,7 @@ import lx.own.frame.tools.network.config.RequestParams;
 public abstract class BaseRequest<R> {
     protected RequestMethod method;
     protected CacheMode cacheMode;
-    protected RequestParams params;
+    protected BaseParams params;
     protected RequestHeader headers;
     protected BaseCallback<R> callback;
     protected String url;
