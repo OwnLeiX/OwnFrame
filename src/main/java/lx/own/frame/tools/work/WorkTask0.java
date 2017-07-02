@@ -19,7 +19,7 @@ public abstract class WorkTask0<D> extends BaseWorkTask<D> {
     }
 
     @Override
-    final protected void run(D data){
+    final protected void handleData(D data){
         work(data);
     }
 

@@ -20,7 +20,7 @@ import lx.own.frame.tools.network.kernel.BaseRequest;
  * @date 30/06/2017
  */
 
-public class EntityRequest<R extends BaseEntity> extends BaseRequest<R> {
+final public class EntityRequest<R extends BaseEntity> extends BaseRequest<R> {
     private EntityRequest(Builder builder) {
         super(builder);
     }

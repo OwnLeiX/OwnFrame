@@ -7,5 +7,5 @@ package lx.own.frame.tools.network;
  * @date 30/06/2017
  */
 
-public class UploadRequest {
+final public class UploadRequest {
 }

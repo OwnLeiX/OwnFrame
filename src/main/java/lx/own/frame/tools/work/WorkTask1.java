@@ -20,7 +20,7 @@ public abstract class WorkTask1<D> extends BaseWorkTask<D> {
     }
 
     @Override
-    final protected void run(D data){
+    final protected void handleData(D data) {
         work(data);
     }
 
@@ -39,18 +39,20 @@ public abstract class WorkTask1<D> extends BaseWorkTask<D> {
         onFinished();
     }
 
-    @MainThread
-    protected void onStared() {
-    }
-
     @WorkerThread
     protected abstract void work(D data);
 
     @MainThread
-    protected abstract void onSucceed();
+    protected void onSucceed() {
+    }
 
     @MainThread
-    protected abstract void onFailed(Throwable e);
+    protected void onStared() {
+    }
+
+    @MainThread
+    protected void onFailed(Throwable e) {
+    }
 
     @MainThread
     protected void onFinished() {

@@ -9,10 +9,9 @@ import android.support.annotation.MainThread;
  * @date 30/06/2017
  */
 
-public abstract class BaseWorkTask<D> implements Runnable {
+public abstract class BaseWorkTask<D> {
 
-    public long id;
-    private boolean isFinished = false;
+    private boolean isFinished;
     private D data;
     private WorkEngine engine;
 
@@ -22,10 +21,8 @@ public abstract class BaseWorkTask<D> implements Runnable {
         return engine.enqueue(this);
     }
 
-    @Override
-    final public void run() {
-        if (engine == null)
-            throw new IllegalStateException("you should call method 'execute()' or 'enqueue()' instead of 'run()' !");
+
+    final void run() {
         isFinished = false;
         try {
             engine.notifyToUiThread(new Runnable() {
@@ -34,7 +31,7 @@ public abstract class BaseWorkTask<D> implements Runnable {
                     start();
                 }
             });
-            run(data);
+            handleData(data);
             engine.notifyToUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -56,11 +53,18 @@ public abstract class BaseWorkTask<D> implements Runnable {
                     finish();
                 }
             });
-            engine.notifyTaskCompleted();
+            data = null;
+            engine = null;
         }
     }
 
-    protected abstract void run(D data) throws Exception;
+    final void release(){
+        isFinished = true;
+        data = null;
+        engine = null;
+    }
+
+    protected abstract void handleData(D data) throws Exception;
 
     @MainThread
     protected abstract void start();

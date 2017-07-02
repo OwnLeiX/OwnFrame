@@ -3,24 +3,22 @@ package lx.own.frame.tools.work.kernel;
 import android.os.Handler;
 import android.os.Looper;
 
-import java.util.LinkedList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class WorkEngine {
-
+    private static final String TAG = "WorkEngine";
     private static WorkEngine mInstance;
-    private static final int POOL_SIZE = Runtime.getRuntime().availableProcessors();// 线程池大小
+    private static final int DEFAULT_SIZE = Runtime.getRuntime().availableProcessors();// 线程池大小
 
     public static void init() {
-        initCustom(POOL_SIZE);
+        initCustom(DEFAULT_SIZE);
     }
 
-    public static void initCustom(int poolSize) {
+    public static void initCustom(int maxSize) {
         if (mInstance == null) {
             synchronized (WorkEngine.class) {
                 if (mInstance == null)
-                    mInstance = new WorkEngine(poolSize);
+                    mInstance = new WorkEngine(maxSize);
             }
         }
     }
@@ -36,7 +34,7 @@ public class WorkEngine {
         }
     }
 
-    static WorkEngine $(){
+    static WorkEngine $() {
         checkInit();
         return mInstance;
     }
@@ -46,35 +44,38 @@ public class WorkEngine {
             throw new IllegalStateException("you didn't call WorkEngine.init() or you have called WorkEngine.release() before !");
     }
 
-    private volatile int mCurrentCount = 0;// 工作线程数
-    private LinkedList<BaseWorkTask> mTaskQueue;// 等待队列
-    private ThreadPoolExecutor mPool;// 线程池
-    private int mPoolSize;
+    private LinkedBlockingQueue<BaseWorkTask> mTaskQueue;// 等待队列
+    private ThreadGroup mThreads;//work线程组
+    private int mMaxSize;//最大线程数
     private Handler mCallbackHandler;
 
     private WorkEngine(int poolSize) {
         if (mInstance != null)
             throw new IllegalStateException("you should not call WorkEngine.init() WorkEngine.initCustom() twice without WorkEngine.release()!");
-        mPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(poolSize);
-        mTaskQueue = new LinkedList<>();// 等待队列
-        mPoolSize = poolSize;
+        mThreads = new ThreadGroup(TAG);
+        mThreads.setDaemon(true);
+        mTaskQueue = new LinkedBlockingQueue<>();// 等待队列
+        mMaxSize = poolSize;
     }
 
     <D> boolean enqueue(final BaseWorkTask<D> task) {
         boolean isExecute = false;
         if (task != null) {
-            if (mCurrentCount < mPoolSize) {
-                mCurrentCount++;
+            if (mThreads.activeCount() < mMaxSize) {
                 isExecute = true;
-                mPool.execute(task);
+                if (mTaskQueue.isEmpty()) {
+                    mTaskQueue.offer(task);
+                } else {
+                    buildThread(task);
+                }
             } else {
-                boolean succeed = mTaskQueue.offer(task);
-                if (!succeed) {
+                if (!mTaskQueue.offer(task)) {
                     isExecute = true;
                     notifyToUiThread(new Runnable() {
                         @Override
                         public void run() {
                             task.fail(new IllegalStateException("WorkTask Queue is filled!"));
+                            task.release();
                         }
                     });
                 }
@@ -88,17 +89,15 @@ public class WorkEngine {
             getHandler().post(r);
     }
 
-    void notifyTaskCompleted() {
-        getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                mCurrentCount--;
-                BaseWorkTask first = mTaskQueue.pollFirst();
-                if (first != null) {
-                    enqueue(first);
-                }
-            }
-        });
+    private boolean buildThread(BaseWorkTask task) {
+        boolean returnValue = false;
+        try {
+            new Thread(mThreads, new WorkThread(mTaskQueue, task)).start();
+            returnValue = true;
+        } catch (Exception e) {
+            returnValue = false;
+        }
+        return returnValue;
     }
 
     private Handler getHandler() {
@@ -112,12 +111,12 @@ public class WorkEngine {
     }
 
     private void destroy() {
+        mThreads.interrupt();
+        mThreads = null;
         mTaskQueue.clear();
-        mPool.shutdownNow();
+        mTaskQueue = null;
         if (mCallbackHandler != null)
             mCallbackHandler.removeCallbacksAndMessages(null);
         mCallbackHandler = null;
-        mTaskQueue = null;
-        mPool = null;
     }
 }
