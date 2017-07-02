@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class WorkEngine {
     private static final String TAG = "WorkEngine";
     private static WorkEngine mInstance;
-    private static final int DEFAULT_SIZE = Runtime.getRuntime().availableProcessors();// 线程池大小
+    private static final int DEFAULT_SIZE = Runtime.getRuntime().availableProcessors();
 
     public static void init() {
         initCustom(DEFAULT_SIZE);
@@ -58,7 +58,7 @@ public class WorkEngine {
         mMaxSize = poolSize;
     }
 
-    <D> boolean enqueue(final BaseWorkTask<D> task) {
+    boolean enqueue(final BaseWorkTask task) {
         boolean isExecute = false;
         if (task != null) {
             if (mThreads.activeCount() < mMaxSize) {
@@ -93,7 +93,7 @@ public class WorkEngine {
     private boolean buildThread(BaseWorkTask task) {
         boolean returnValue = false;
         try {
-            new Thread(mThreads, new WorkThread(mTaskQueue, task)).start();
+            new WorkThread(mThreads, mTaskQueue, task).start();
             returnValue = true;
         } catch (Exception e) {
             returnValue = false;

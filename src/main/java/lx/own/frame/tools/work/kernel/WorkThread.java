@@ -9,22 +9,24 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @date 02/07/2017
  */
 
-public class WorkThread implements Runnable {
+final public class WorkThread extends Thread {
+    private static final String TAG = "WorkThread";
     private LinkedBlockingQueue<BaseWorkTask> mTaskQueue;
     private BaseWorkTask mCurrentTask;
 
-    public WorkThread(LinkedBlockingQueue<BaseWorkTask> queue) {
-        mTaskQueue = queue;
+    public WorkThread(ThreadGroup group, LinkedBlockingQueue<BaseWorkTask> queue) {
+        this(group, queue, null);
     }
 
-    public WorkThread(LinkedBlockingQueue<BaseWorkTask> queue, BaseWorkTask task) {
+    public WorkThread(ThreadGroup group, LinkedBlockingQueue<BaseWorkTask> queue, BaseWorkTask task) {
+        super(group, TAG);
         this.mTaskQueue = queue;
         this.mCurrentTask = task;
     }
 
     @Override
     public void run() {
-        while (!Thread.interrupted()) {
+        while (!interrupted()) {
             if (mCurrentTask == null) {
                 try {
                     mCurrentTask = mTaskQueue.take();

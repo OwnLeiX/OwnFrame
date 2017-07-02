@@ -51,7 +51,11 @@ public abstract class BaseRequest<R> {
         callback.onFinished();
     }
 
-    public void enqueue() {
+    final public void enqueue() {
+    }
+
+    final public R execute() throws Exception {
+        return NetworkEngine.$().execute(this);
     }
 
     public static abstract class BaseBuilder<Q extends BaseRequest<R>, C extends BaseCallback<R>, R> {

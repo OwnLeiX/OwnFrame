@@ -12,6 +12,4 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class RequestQueue {
     LinkedBlockingQueue<BaseRequest> mCacheQueue;
     LinkedBlockingQueue<BaseRequest> mNetworkQueue;
-
-
 }
