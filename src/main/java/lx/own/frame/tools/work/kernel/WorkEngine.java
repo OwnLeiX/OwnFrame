@@ -39,7 +39,7 @@ public class WorkEngine {
         return mInstance;
     }
 
-    static void checkInit() {
+    private static void checkInit() {
         if (mInstance == null)
             throw new IllegalStateException("you didn't call WorkEngine.init() or you have called WorkEngine.release() before !");
     }
@@ -63,7 +63,7 @@ public class WorkEngine {
         if (task != null) {
             if (mThreads.activeCount() < mMaxSize) {
                 isExecute = true;
-                if (mTaskQueue.isEmpty()) {
+                if (mTaskQueue.isEmpty() && mThreads.activeCount() > 0) {
                     mTaskQueue.offer(task);
                 } else {
                     buildThread(task);
@@ -91,7 +91,7 @@ public class WorkEngine {
     }
 
     private boolean buildThread(BaseWorkTask task) {
-        boolean returnValue = false;
+        boolean returnValue;
         try {
             new WorkThread(mThreads, mTaskQueue, task).start();
             returnValue = true;
