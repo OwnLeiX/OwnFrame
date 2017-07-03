@@ -6,8 +6,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +25,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private static final String INTENT_KEY_THEME_CHANGED = "theme_is_changed";
 
     private static final int FLAG_DOUBLE_CLICK_QUIT = 1;//双击返回键finish
-    private static final int FLAG_HAS_SAVED_STATE = 1 << 1;//是否有恢复的数据
 
     private long mExitTime;//用于双击退出的时间记录
     private View mContentView;//内容根布局
@@ -34,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         initTheme();
         supportStatusBar();
         onInitFuture();
-        mContentView = LayoutInflater.from(this).inflate(provideContentViewId(), (ViewGroup) getWindow().getDecorView(), false);
+        mContentView = LayoutInflater.from(this).inflate(onProvideContentViewId(), (ViewGroup) getWindow().getDecorView(), false);
         if (mContentView != null)
             supportContentView(mContentView);
         super.onCreate(savedInstanceState);
@@ -42,13 +43,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             setContentView(mContentView);
             onInitView(mContentView);
             onInitListener();
-            if (savedInstanceState != null) {
-                mFlags |= FLAG_HAS_SAVED_STATE;
+            if (savedInstanceState != null)
                 onRestoreState(savedInstanceState);
-            } else {
-                mFlags &= ~FLAG_HAS_SAVED_STATE;
-            }
-            onInitData((mFlags & FLAG_HAS_SAVED_STATE) > 0);
+            onInitData(savedInstanceState != null);
         }
     }
 
@@ -95,7 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             } else {
                 super.onBackPressed();
             }
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -105,7 +102,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * -子类必须【复写】
      */
     @LayoutRes
-    protected abstract int provideContentViewId();
+    protected abstract int onProvideContentViewId();
 
     /**
      * 你可以在这里初始化自己的特性
@@ -118,6 +115,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 如果需要，在这里保存数据
      * -提供给子类【复写】
+     *
+     * @param outState 用以存储数据的载体
      */
     protected void onSaveState(Bundle outState) {
     }
@@ -126,6 +125,8 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 如果你有在{@link #onSaveState(Bundle)}里保存数据
      * 可以在这里恢复自己的数据
      * -提供给子类【复写】
+     *
+     * @param savedInstanceState 恢复的数据载体
      */
     protected void onRestoreState(Bundle savedInstanceState) {
     }
@@ -288,7 +289,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivityForResult(intent, requestCode);
     }
 
-
     /**
      * showToast的方法
      * -提供给子类【调用】
@@ -297,6 +297,16 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     final protected void showShortToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * showToast的方法
+     * -提供给子类【调用】
+     *
+     * @param resId 文本资源id
+     */
+    final protected void showShortToast(@StringRes int resId) {
+        showShortToast(getString(resId));
     }
 
     /**
@@ -391,6 +401,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 获取系统顶部状态栏的高度
+     *
+     * @param context 上下文，此处仅使用 this。
      */
     private int getStatusBarHeight(Context context) {
         int statusBarHeight = 0;
@@ -416,7 +428,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 获取当前主题的View背景color
+     *
+     * @return ARGB
      */
+    @ColorInt
     private int getThemeViewBgColor() {
         switch (ThemeUtil.getTheme()) {
             default:

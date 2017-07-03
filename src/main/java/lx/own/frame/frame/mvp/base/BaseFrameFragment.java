@@ -1,5 +1,6 @@
 package lx.own.frame.frame.mvp.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -15,11 +16,57 @@ public abstract class BaseFrameFragment<P extends BasePresenter, M extends BaseM
     protected M mModel;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    final public void onAttach(Context context) {
+        mPresenter = TUtil.getT(this, 0);
+        mModel = TUtil.getT(this, 1);
+        mPresenter.setVM(this, mModel);
+        super.onAttach(context);
+    }
+
+    @Override
+    final public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = TUtil.getT(this,0);
-        mModel = TUtil.getT(this,1);
-        mPresenter.setVM(this,mModel);
+        if (mPresenter != null)
+            mPresenter.onIViewCreated();
+    }
+
+    @Override
+    public void onStart() {
+        if (mPresenter != null)
+            mPresenter.onIViewStarted();
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        if (mPresenter != null)
+            mPresenter.onIViewResumed();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        if (mPresenter != null)
+            mPresenter.onIViewPaused();
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        if (mPresenter != null)
+            mPresenter.onIViewStopped();
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mPresenter != null)
+            mPresenter.onIViewDestroyed();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onRequestStart() {
     }
 
     @Override
@@ -33,9 +80,7 @@ public abstract class BaseFrameFragment<P extends BasePresenter, M extends BaseM
     }
 
     @Override
-    public void onDestroy() {
-        if (mPresenter != null)
-            mPresenter.onIViewDestroyed();
-        super.onDestroy();
+    public void onRequestEnd() {
+
     }
 }

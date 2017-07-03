@@ -21,8 +21,8 @@ import android.view.WindowManager;
 
 public abstract class BaseDialogFragment extends DialogFragment {
 
-    private final String KeyOfContentViewResId = "HcKeyOfContentViewResId";
-    private final String KeyOfOuterTouchCloseable = "HcKeyOfOuterTouchCloseable";
+    private final String KeyOfContentViewResId = "KeyOfContentViewResId";
+    private final String KeyOfOuterTouchCloseable = "KeyOfOuterTouchCloseable";
     private final String KeyOfCustomGravity = "KeyOfCustomGravity";
     private int mContentViewResId = 0;
     private boolean isOuterTouchCloseable = false;//默认外部区域.点击不能关闭
@@ -61,7 +61,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
         return returnValue;
     }
 
-    private int getCunstomGravity(Bundle inputBundle) {
+    private int getCustomGravity(Bundle inputBundle) {
         int returnValue = 0;
         if (inputBundle != null) {
             returnValue = inputBundle.getInt(KeyOfCustomGravity, Gravity.CENTER);
@@ -76,7 +76,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     final public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.isOuterTouchCloseable = this.getOuterTouchCloseable(savedInstanceState);
-        this.mCustomGravity = this.getCunstomGravity(savedInstanceState);
+        this.mCustomGravity = this.getCustomGravity(savedInstanceState);
         View returnValue;
         int subViewResId = this.getContentViewResId(savedInstanceState);
         returnValue = inflater.inflate(subViewResId, container);
@@ -96,7 +96,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
         //强制全屏尺寸
         getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         //设置自定义位置
-        getDialog().getWindow().setGravity(getCunstomGravity(savedInstanceState));
+        getDialog().getWindow().setGravity(getCustomGravity(savedInstanceState));
 
         getDialog().setCanceledOnTouchOutside(this.isOuterTouchCloseable);
     }
