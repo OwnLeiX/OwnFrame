@@ -7,8 +7,7 @@ import lx.own.frame.tools.work.kernel.BaseWorkTask;
 /**
  * <p> </p><br/>
  *
- * @author Lx
- * @date 30/06/2017
+ * @author Lx on 30/06/2017
  */
 
 public abstract class WorkTask0<D> extends BaseWorkTask<D> {
@@ -19,7 +18,7 @@ public abstract class WorkTask0<D> extends BaseWorkTask<D> {
     }
 
     @Override
-    final protected void handleData(D data){
+    final protected void handleData(D data) throws Exception {
         work(data);
     }
 
@@ -38,10 +37,10 @@ public abstract class WorkTask0<D> extends BaseWorkTask<D> {
 
     }
 
-    final public void execute(D data) {
+    final public void execute(D data) throws Exception {
         work(data);
     }
 
     @WorkerThread
-    protected abstract void work(D data);
+    protected abstract void work(D data) throws Exception;
 }

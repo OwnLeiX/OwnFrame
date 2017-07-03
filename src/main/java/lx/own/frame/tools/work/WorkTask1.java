@@ -8,19 +8,18 @@ import lx.own.frame.tools.work.kernel.BaseWorkTask;
 /**
  * <p> </p><br/>
  *
- * @author Lx
- * @date 30/06/2017
+ * @author Lx on 30/06/2017
  */
 
 public abstract class WorkTask1<D> extends BaseWorkTask<D> {
 
     @Override
     final protected void start() {
-        onStared();
+        onStarted();
     }
 
     @Override
-    final protected void handleData(D data) {
+    final protected void handleData(D data) throws Exception {
         work(data);
     }
 
@@ -40,14 +39,14 @@ public abstract class WorkTask1<D> extends BaseWorkTask<D> {
     }
 
     @WorkerThread
-    protected abstract void work(D data);
+    protected abstract void work(D data) throws Exception;
 
     @MainThread
     protected void onSucceed() {
     }
 
     @MainThread
-    protected void onStared() {
+    protected void onStarted() {
     }
 
     @MainThread
@@ -58,7 +57,7 @@ public abstract class WorkTask1<D> extends BaseWorkTask<D> {
     protected void onFinished() {
     }
 
-    final public void execute(D data) {
+    final public void execute(D data) throws Exception {
         work(data);
     }
 }
