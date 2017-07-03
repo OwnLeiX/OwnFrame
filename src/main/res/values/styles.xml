@@ -1,5 +1,6 @@
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- 若想避免初次启动首页未加载时无沉浸式状态栏效果的问题，请使用或继承此主题 -->
+    <style name="SupportTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="colorPrimaryDark">@android:color/transparent</item>
         <item name="colorAccent">@android:color/transparent</item>

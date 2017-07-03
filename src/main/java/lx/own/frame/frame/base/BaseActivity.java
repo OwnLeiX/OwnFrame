@@ -25,6 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private static final String INTENT_KEY_THEME_CHANGED = "theme_is_changed";
 
     private static final int FLAG_DOUBLE_CLICK_QUIT = 1;//双击返回键finish
+    private static final int FLAG_IMMERSED_STATUS_BAR = 1 << 2;//沉浸式状态栏
 
     private long mExitTime;//用于双击退出的时间记录
     private View mContentView;//内容根布局
@@ -36,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         supportStatusBar();
         onInitFuture();
         mContentView = LayoutInflater.from(this).inflate(onProvideContentViewId(), (ViewGroup) getWindow().getDecorView(), false);
-        if (mContentView != null)
+        if ((mFlags & FLAG_IMMERSED_STATUS_BAR) > 0)
             supportContentView(mContentView);
         super.onCreate(savedInstanceState);
         if (mContentView != null) {
@@ -175,6 +176,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 如果需要，调用此方法适配沉浸式布局
+     * 配合{@link #setImmersedStatus(boolean)}一起使用
      * -提供给子类【调用】
      *
      * @param title 用于数据展示的，置顶的View
@@ -204,6 +206,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * <b>如果需要，调用此方法适配沉浸式布局</b></p>
+     * 配合{@link #setImmersedStatus(boolean)}一起使用
      * -提供给子类【调用】
      *
      * @param viewGroup 在内容根布局内置顶，但是并非用于内容展示的ViewGroup
@@ -233,6 +236,21 @@ public abstract class BaseActivity extends AppCompatActivity {
             mFlags |= FLAG_DOUBLE_CLICK_QUIT;
         } else {
             mFlags &= ~FLAG_DOUBLE_CLICK_QUIT;
+        }
+    }
+
+    /**
+     * 设置是否需要沉浸式状态栏样式的跟布局
+     * {@link #FLAG_IMMERSED_STATUS_BAR}
+     * -提供给子类【调用】
+     *
+     * @param immersed true 沉浸式 | false 非沉浸式
+     */
+    final protected void setImmersedStatus(boolean immersed) {
+        if (immersed) {
+            mFlags |= FLAG_IMMERSED_STATUS_BAR;
+        } else {
+            mFlags &= ~FLAG_IMMERSED_STATUS_BAR;
         }
     }
 
@@ -378,6 +396,8 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param contentView 本页面的内容根布局
      */
     private void supportContentView(View contentView) {
+        if (contentView == null)
+            return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             contentView.setFitsSystemWindows(false);
             if (contentView instanceof ViewGroup) {

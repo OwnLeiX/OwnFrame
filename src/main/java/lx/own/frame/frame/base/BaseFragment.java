@@ -121,6 +121,7 @@ public abstract class BaseFragment extends Fragment {
      */
     protected void onRestoreState(@NonNull Bundle savedInstanceState) {
     }
+
     /**
      * 请求创建菜单
      * -提供给子类【复写】
@@ -143,6 +144,7 @@ public abstract class BaseFragment extends Fragment {
 
     /**
      * 如果需要，调用此方法适配沉浸式布局
+     * 配合{@link BaseActivity#setImmersedStatus(boolean)}一起使用
      * -提供给子类【调用】
      *
      * @param title 用于数据展示的，置顶的View
@@ -174,6 +176,7 @@ public abstract class BaseFragment extends Fragment {
 
     /**
      * <b>如果需要，调用此方法适配沉浸式布局</b></p>
+     * 配合{@link BaseActivity#setImmersedStatus(boolean)}一起使用
      * -提供给子类【调用】
      *
      * @param viewGroup 在内容根布局内置顶，但是并非用于内容展示的ViewGroup
