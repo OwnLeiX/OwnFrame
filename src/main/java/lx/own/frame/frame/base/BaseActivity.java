@@ -34,8 +34,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         initTheme();
-        supportStatusBar();
         onInitFuture();
+        if ((mFlags & FLAG_IMMERSED_STATUS_BAR) > 0)
+            supportStatusBar();
         mContentView = LayoutInflater.from(this).inflate(onProvideContentViewId(), (ViewGroup) getWindow().getDecorView(), false);
         if ((mFlags & FLAG_IMMERSED_STATUS_BAR) > 0)
             supportContentView(mContentView);
@@ -242,6 +243,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 设置是否需要沉浸式状态栏样式的跟布局
      * {@link #FLAG_IMMERSED_STATUS_BAR}
+     * 如果使用了{@link lx.own.frame.R.style#SupportTheme} 则此方法无效
      * -提供给子类【调用】
      *
      * @param immersed true 沉浸式 | false 非沉浸式
