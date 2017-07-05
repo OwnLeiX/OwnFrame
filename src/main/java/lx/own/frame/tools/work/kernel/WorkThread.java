@@ -26,7 +26,7 @@ final public class WorkThread extends Thread {
 
     @Override
     public void run() {
-        while (!interrupted()) {
+        while (!isInterrupted()) {
             if (mCurrentTask == null) {
                 try {
                     mCurrentTask = mTaskQueue.take();
