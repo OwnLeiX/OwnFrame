@@ -61,22 +61,12 @@ public abstract class BaseFrameActivity<P extends BasePresenter, M extends BaseM
     }
 
     @Override
-    public void onRequestStart() {
+    public void onTimeConsumingTaskStarted() {
 
     }
 
     @Override
-    public void onRequestEnd() {
-
-    }
-
-    @Override
-    public void onRequestError(String msg) {
-
-    }
-
-    @Override
-    public void onInternetError() {
+    public void onTimeConsumingTaskFinished() {
 
     }
 }

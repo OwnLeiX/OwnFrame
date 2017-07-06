@@ -66,21 +66,12 @@ public abstract class BaseFrameFragment<P extends BasePresenter, M extends BaseM
     }
 
     @Override
-    public void onRequestStart() {
+    public void onTimeConsumingTaskStarted() {
+
     }
 
     @Override
-    public void onRequestError(String msg) {
-        showShortToast(msg);
-    }
-
-    @Override
-    public void onInternetError() {
-        showShortToast("InternetError");
-    }
-
-    @Override
-    public void onRequestEnd() {
+    public void onTimeConsumingTaskFinished() {
 
     }
 }

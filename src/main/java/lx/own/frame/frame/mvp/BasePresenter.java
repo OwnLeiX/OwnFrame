@@ -7,7 +7,10 @@ public abstract class BasePresenter<M, V> {
     final public void setVM(V view, M model) {
         this.mView = view;
         this.mModel = model;
+        onInit(mModel,mView);
     }
+
+    protected void onInit(M model,V view){}
 
     public void onIViewCreated(){}
 
