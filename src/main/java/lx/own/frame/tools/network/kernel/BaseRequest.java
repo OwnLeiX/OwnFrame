@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import lx.own.frame.tools.network.config.CacheMode;
+import lx.own.frame.tools.network.config.Schedulers;
 import lx.own.frame.tools.network.config.RequestError;
 import lx.own.frame.tools.network.config.RequestHeader;
 import lx.own.frame.tools.network.config.RequestMethod;
@@ -23,6 +24,7 @@ public abstract class BaseRequest<R> {
     protected RequestHeader headers;
     protected BaseCallback<R> callback;
     protected String url;
+    protected Schedulers schedulers;
 
     protected <Q extends BaseRequest<R>, C extends BaseCallback<R>> BaseRequest(BaseBuilder<Q, C, R> builder) {
         this.method = builder.method;
@@ -31,27 +33,13 @@ public abstract class BaseRequest<R> {
         this.headers = builder.headers;
         this.callback = builder.callback;
         this.url = builder.url;
+        this.schedulers = builder.schedulers;
     }
 
     protected abstract R handleResponse(InputStream is, Charset charset) throws Exception;
 
-    final void start() {
-        callback.onStarted();
-    }
-
-    final void success(R response) {
-        callback.onSucceed(response);
-    }
-
-    final void fail(RequestError error) {
-        callback.onFailed(error);
-    }
-
-    final void finish() {
-        callback.onFinished();
-    }
-
     final public void enqueue() {
+        NetworkEngine.$().enqueue(this);
     }
 
     final public R execute() throws Exception {
@@ -65,6 +53,7 @@ public abstract class BaseRequest<R> {
         private RequestHeader headers;
         private C callback;
         private String url;
+        private Schedulers schedulers = Schedulers.MainThread;
 
         protected BaseBuilder() {
         }
@@ -97,6 +86,10 @@ public abstract class BaseRequest<R> {
         public BaseBuilder<Q, C, R> setCallback(C callback) {
             this.callback = callback;
             return this;
+        }
+
+        public void setSchedulers(Schedulers schedulers) {
+            this.schedulers = schedulers;
         }
 
         public abstract Q build();
