@@ -8,5 +8,5 @@ package lx.own.frame.tools.network.config;
  */
 
 public enum Schedulers {
-    MainThread,BackgroundThread,CurrentThread;
+    MainThread,CurrentThread
 }

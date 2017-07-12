@@ -144,22 +144,22 @@ public class NetworkEngine {
                 final R response = request.handleResponse(connection.getInputStream(), charset);
                 postToCallbackThread(buildSucceedCallback(callback, response), scheduler);
             }
-            //Fixme EntityRequest IOException, IllegalAccessException, InstantiationException, JSONException, AssertNonNullException
-            //Fixme BytesRequest IOException
+            //EntityRequest: IOException, IllegalAccessException, InstantiationException, JSONException, AssertNonNullException
+            //BytesRequest: IOException
         } catch (InstantiationException e) {
-
+            postToCallbackThread(buildFailedCallback(callback, RequestError.InstantiationError), scheduler);
         } catch (MalformedURLException e) {
-
+            postToCallbackThread(buildFailedCallback(callback, RequestError.UrlError), scheduler);
         } catch (IllegalAccessException e) {
-
+            postToCallbackThread(buildFailedCallback(callback, RequestError.IllegalAccessError), scheduler);
         } catch (IOException e) {
-
+            postToCallbackThread(buildFailedCallback(callback, RequestError.IOError), scheduler);
         } catch (JSONException e) {
-
+            postToCallbackThread(buildFailedCallback(callback, RequestError.JSONError), scheduler);
         } catch (AssertNonNullException e) {
-
+            postToCallbackThread(buildFailedCallback(callback, RequestError.AssertNonNullError), scheduler);
         } catch (Exception e) {
-
+            postToCallbackThread(buildFailedCallback(callback, RequestError.UnknownError), scheduler);
         } finally {
             postToCallbackThread(buildFinishedCallback(callback), scheduler);
         }
@@ -216,14 +216,16 @@ public class NetworkEngine {
     private void postToCallbackThread(Runnable r, Schedulers thread) {
         if (thread == Schedulers.MainThread) {
             mCallbackHandler.post(r);
-        } else if (thread == Schedulers.BackgroundThread) {
-
-        } else if (thread == Schedulers.CurrentThread) {
-
+        } else {
+            r.run();
         }
     }
 
     private void destroy() {
+        mCallbackHandler.removeCallbacksAndMessages(null);
+    }
 
+    private boolean checkIsMainThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
     }
 }
