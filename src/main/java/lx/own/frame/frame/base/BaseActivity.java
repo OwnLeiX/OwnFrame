@@ -184,6 +184,9 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     final protected void supportTitleView(View title) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final ViewGroup.LayoutParams layoutParams = title.getLayoutParams();
+            if (layoutParams.height != ViewGroup.LayoutParams.WRAP_CONTENT && layoutParams.height != ViewGroup.LayoutParams.MATCH_PARENT)
+                layoutParams.height += getStatusBarHeight();
             title.setFitsSystemWindows(true);
             if (title instanceof ViewGroup) {
                 ((ViewGroup) title).setClipToPadding(true);
@@ -191,6 +194,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(this), title.getPaddingRight(), title.getPaddingBottom());
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            final ViewGroup.LayoutParams layoutParams = title.getLayoutParams();
+            if (layoutParams.height != ViewGroup.LayoutParams.WRAP_CONTENT && layoutParams.height != ViewGroup.LayoutParams.MATCH_PARENT)
+                layoutParams.height += getStatusBarHeight();
             title.setFitsSystemWindows(true);
             if (title instanceof ViewGroup) {
                 ((ViewGroup) title).setClipToPadding(true);
