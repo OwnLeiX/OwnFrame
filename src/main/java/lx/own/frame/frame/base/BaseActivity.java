@@ -1,6 +1,5 @@
 package lx.own.frame.frame.base;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
-
 import lx.own.frame.tools.utils.ThemeUtil;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -191,7 +189,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (title instanceof ViewGroup) {
                 ((ViewGroup) title).setClipToPadding(true);
             } else {
-                title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(this), title.getPaddingRight(), title.getPaddingBottom());
+                title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(), title.getPaddingRight(), title.getPaddingBottom());
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             final ViewGroup.LayoutParams layoutParams = title.getLayoutParams();
@@ -201,7 +199,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (title instanceof ViewGroup) {
                 ((ViewGroup) title).setClipToPadding(true);
             } else {
-                title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(this), title.getPaddingRight(), title.getPaddingBottom());
+                title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(), title.getPaddingRight(), title.getPaddingBottom());
             }
         } else {
             title.setFitsSystemWindows(true);
@@ -411,14 +409,14 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (contentView instanceof ViewGroup) {
                 ((ViewGroup) contentView).setClipToPadding(false);
             } else {
-                contentView.setPadding(contentView.getPaddingLeft(), contentView.getPaddingTop() + getStatusBarHeight(this), contentView.getPaddingRight(), contentView.getBottom());
+                contentView.setPadding(contentView.getPaddingLeft(), contentView.getPaddingTop() + getStatusBarHeight(), contentView.getPaddingRight(), contentView.getBottom());
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             contentView.setFitsSystemWindows(false);
             if (contentView instanceof ViewGroup) {
                 ((ViewGroup) contentView).setClipToPadding(false);
             } else {
-                contentView.setPadding(contentView.getPaddingLeft(), contentView.getPaddingTop() + getStatusBarHeight(this), contentView.getPaddingRight(), contentView.getBottom());
+                contentView.setPadding(contentView.getPaddingLeft(), contentView.getPaddingTop() + getStatusBarHeight(), contentView.getPaddingRight(), contentView.getBottom());
             }
         } else {
             contentView.setFitsSystemWindows(true);
@@ -429,12 +427,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 获取系统顶部状态栏的高度
-     *
-     * @param context 上下文，此处仅使用 this。
      */
-    private int getStatusBarHeight(Context context) {
+    private int getStatusBarHeight() {
         int statusBarHeight = 0;
-        Resources res = context.getResources();
+        Resources res = getResources();
         int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             statusBarHeight = res.getDimensionPixelSize(resourceId);
