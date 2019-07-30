@@ -1,7 +1,8 @@
 package lx.own.frame.frame.mvp.base;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import lx.own.frame.frame.base.BaseActivity;
 import lx.own.frame.frame.mvp.BaseModel;

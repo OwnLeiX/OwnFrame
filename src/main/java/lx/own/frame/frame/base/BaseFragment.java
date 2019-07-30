@@ -1,15 +1,9 @@
 package lx.own.frame.frame.base;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -155,16 +155,14 @@ public abstract class BaseFragment extends Fragment {
             if (title instanceof ViewGroup) {
                 ((ViewGroup) title).setClipToPadding(true);
             } else {
-                FragmentActivity dependentActivity = getActivity();
-                title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(dependentActivity), title.getPaddingRight(), title.getPaddingBottom());
+                title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(), title.getPaddingRight(), title.getPaddingBottom());
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             title.setFitsSystemWindows(true);
             if (title instanceof ViewGroup) {
                 ((ViewGroup) title).setClipToPadding(true);
             } else {
-                FragmentActivity dependentActivity = getActivity();
-                title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(dependentActivity), title.getPaddingRight(), title.getPaddingBottom());
+                title.setPadding(title.getPaddingLeft(), title.getPaddingTop() + getStatusBarHeight(), title.getPaddingRight(), title.getPaddingBottom());
             }
         } else {
             title.setFitsSystemWindows(true);
@@ -320,15 +318,21 @@ public abstract class BaseFragment extends Fragment {
     /**
      * 获取系统顶部状态栏的高度
      */
-    private int getStatusBarHeight(Context context) {
-        int statusBarHeight = 0;
-        if (context != null) {
-            Resources res = context.getResources();
-            int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
-            if (resourceId > 0) {
-                statusBarHeight = res.getDimensionPixelSize(resourceId);
+    private int getStatusBarHeight() {
+        if (BaseActivity.statusBarHeight == -1) {
+            synchronized (BaseActivity.class) {
+                if (BaseActivity.statusBarHeight == -1) {
+                    final FragmentActivity dependentActivity = getActivity();
+                    if (dependentActivity != null) {
+                        final Resources res = dependentActivity.getResources();
+                        final int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
+                        if (resourceId > 0) {
+                            BaseActivity.statusBarHeight = res.getDimensionPixelSize(resourceId);
+                        }
+                    }
+                }
             }
         }
-        return statusBarHeight;
+        return BaseActivity.statusBarHeight > 0 ? BaseActivity.statusBarHeight : 0;
     }
 }

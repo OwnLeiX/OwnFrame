@@ -19,11 +19,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import lx.own.frame.frame.base.BaseApplication;
-import lx.own.frame.tools.log.Logger;
 
 public class SPUtil {
 
-    private static final String TAG = "SPUtil";
     private final static String SP = "michong_sp";
 
     private volatile static SPUtil mInstance;
@@ -53,7 +51,6 @@ public class SPUtil {
         } catch (NullPointerException e) {
             retryInit();
         } catch (Exception e) {
-            Logger.e(TAG,"异常：",e);
         }
         return returnValue;
     }
@@ -69,7 +66,6 @@ public class SPUtil {
         } catch (NullPointerException e) {
             retryInit();
         } catch (Exception e) {
-            Logger.e(TAG,"异常：",e);
         }
         return returnValue;
     }
@@ -81,7 +77,6 @@ public class SPUtil {
         } catch (NullPointerException e) {
             retryInit();
         } catch (Exception e) {
-            Logger.e(TAG,"异常：",e);
         }
         return returnValue;
     }
@@ -90,7 +85,6 @@ public class SPUtil {
         try {
             mPreferences = BaseApplication.mContext.getSharedPreferences(SP, Context.MODE_PRIVATE);
         } catch (Exception e) {
-            Logger.e(TAG, "尝试重新初始化失败", e);
         }
     }
 
@@ -101,7 +95,6 @@ public class SPUtil {
         } catch (NullPointerException e) {
             retryInit();
         } catch (Exception e) {
-            Logger.e(TAG,"异常：",e);
         }
         return returnValue;
     }
@@ -121,7 +114,6 @@ public class SPUtil {
         } catch (NullPointerException e) {
             retryInit();
         } catch (Exception e) {
-            Logger.e(TAG,"异常：",e);
         }
         return returnValue;
     }

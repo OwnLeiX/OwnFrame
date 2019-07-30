@@ -5,11 +5,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -17,6 +12,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+
 import lx.own.frame.tools.utils.ThemeUtil;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -24,6 +26,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private static final int FLAG_DOUBLE_CLICK_QUIT = 1;//双击返回键finish
     private static final int FLAG_IMMERSED_STATUS_BAR = 1 << 2;//沉浸式状态栏
+
+    static int statusBarHeight = -1;
 
     private long mExitTime;//用于双击退出的时间记录
     private View mContentView;//内容根布局
@@ -429,13 +433,18 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 获取系统顶部状态栏的高度
      */
     private int getStatusBarHeight() {
-        int statusBarHeight = 0;
-        Resources res = getResources();
-        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            statusBarHeight = res.getDimensionPixelSize(resourceId);
+        if (statusBarHeight == -1) {
+            synchronized (BaseActivity.class) {
+                if (statusBarHeight == -1) {
+                    final Resources res = getResources();
+                    final int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
+                    if (resourceId > 0) {
+                        statusBarHeight = res.getDimensionPixelSize(resourceId);
+                    }
+                }
+            }
         }
-        return statusBarHeight;
+        return statusBarHeight > 0 ? statusBarHeight : 0;
     }
 
     /**

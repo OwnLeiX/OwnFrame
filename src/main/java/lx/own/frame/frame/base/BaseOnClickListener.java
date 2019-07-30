@@ -23,7 +23,7 @@ public class BaseOnClickListener implements View.OnClickListener{
 
     @Override
     final public void onClick(View v) {
-        long timeMillis = System.currentTimeMillis();
+        final long timeMillis = System.currentTimeMillis();
         if (timeMillis - mPreClickTime > mClickInterval) {
             this.onValidClick(v);
             mPreClickView = v;

@@ -1,6 +1,6 @@
 package lx.own.frame.tools.work;
 
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 
 import lx.own.frame.tools.work.kernel.BaseWorkTask;
 

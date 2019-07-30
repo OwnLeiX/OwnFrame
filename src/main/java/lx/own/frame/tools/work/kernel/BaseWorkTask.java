@@ -1,6 +1,6 @@
 package lx.own.frame.tools.work.kernel;
 
-import android.support.annotation.MainThread;
+import androidx.annotation.MainThread;
 
 /**
  * <p> </p><br/>
